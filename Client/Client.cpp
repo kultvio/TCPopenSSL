@@ -5,7 +5,7 @@
 int main()
 {
     std::string ipaddress = "127.0.0.1";
-    int port = 8888;
+    int port = 8288;
     WSADATA WSdata;
     if (WSAStartup(MAKEWORD(2, 1), &WSdata) == SOCKET_ERROR)
     {
@@ -28,8 +28,12 @@ int main()
 
     std::cout << "Connect success \n";
     char msg[256];
-    recv(Connection, msg, sizeof(msg), NULL);
-    std::cout << msg;
+    while (true)
+    {
+        recv(Connection, msg, sizeof(msg), NULL);
+        std::cout << msg;
+    }
+   
     
 
     system("pause");

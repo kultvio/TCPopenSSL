@@ -1,47 +1,68 @@
-﻿// Server.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
-
-#include <iostream>
-#pragma comment(lib, "ws2_32.lib")
-#include "WinSock2.h"
+﻿#include "server.h"
 #pragma warning(disable:4996)
-int main()
+
+TCPserver::Server::Server(int port, std::string ipaddress)
 {
-    std::string ipaddress = "127.0.0.1";
-    int port = 8888;
-    WSADATA WSdata;
-    if (WSAStartup(MAKEWORD(2, 1), &WSdata) == SOCKET_ERROR)
-    {
-        std::cout << "Couldn't init WSA!";
-        return 1;
-    }
-
-    SOCKADDR_IN addr;
-    int sizeofaddr = sizeof(addr);
-    addr.sin_addr.s_addr = inet_addr(ipaddress.c_str());
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
-
-    SOCKET sListen = socket(AF_INET, SOCK_STREAM, NULL);
-    bind(sListen, (SOCKADDR*)&addr, sizeofaddr);
-    listen(sListen, SOMAXCONN);
-
-    SOCKET newConnetion;
-    newConnetion = accept(sListen, (SOCKADDR*)&addr, &sizeofaddr);
-
-    if (newConnetion == 0)
-    {
-        std::cout << "Error conection";
-    }
-    else
-    {
-        std::cout << "Client connected! \n";
-        char msg[256] = "aaaaaaaaaaaaaaaaaaaaa";
-        send(newConnetion, msg, sizeof(msg), NULL);
-    }
-
-
-
-    return 0;
+	this->port = port;
+	this->ipaddress = ipaddress;
+	addrlength = sizeof(addr);
 }
 
+TCPserver::Server::~Server()
+{
+}
+
+void TCPserver::Server::start()
+{
+	init();
+	connect();
+	while (true)
+	{
+		Sleep(5000);
+		for (int i = 0; i < counter; i++)
+		{
+			Send(i);
+		}
+		
+	}
+}
+
+void TCPserver::Server::init()
+{
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	addr.sin_addr.s_addr = inet_addr(ipaddress.c_str());
+
+	if (WSAStartup(MAKEWORD(2, 1), &wsa) == SOCKET_ERROR)
+	{
+		std::cout << "Couldn't init WSA!";
+		exit(EXIT_FAILURE);
+	}
+
+	serversocket = socket(AF_INET, SOCK_STREAM, NULL);
+	bind(serversocket, (SOCKADDR*)&addr, addrlength);
+	listen(serversocket, SOMAXCONN);
+}
+
+void TCPserver::Server::connect()
+{
+	SOCKET newConnection;
+	newConnection = accept(serversocket, (SOCKADDR*)&addr, &addrlength);
+	if (newConnection == 0)
+	{
+		std::cout << "Error to connect";
+	}
+	else
+	{
+		connections[counter] = newConnection;
+		std::cout << "Client connected! \n";
+		counter++;
+	}
+}
+
+void TCPserver::Server::Send(int i)
+{
+	
+	char msg[256] = "aaaaaaaaaaaaaaaaaaaaa";
+	send(connections[i], msg, sizeof(msg), NULL);
+}

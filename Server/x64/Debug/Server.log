@@ -1,2 +1,2 @@
-﻿  Server.cpp
-  Server.vcxproj -> C:\Users\derom\Desktop\TCPopenSSL\x64\Debug\Server.exe
+﻿main.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: __cdecl Server::~Server(void)" (??1Server@@QEAA@XZ) в функции main.
+C:\Users\kultvio\Documents\TCPopenSSL\x64\Debug\Server.exe : fatal error LNK1120: неразрешенных внешних элементов: 1
