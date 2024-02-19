@@ -15,7 +15,7 @@ TCPserver::Server::~Server()
 void TCPserver::Server::start()
 {
 	init();
-	connect();
+	getCconnect();
 	while (true)
 	{
 		Sleep(5000);
@@ -44,7 +44,7 @@ void TCPserver::Server::init()
 	listen(serversocket, SOMAXCONN);
 }
 
-void TCPserver::Server::connect()
+void TCPserver::Server::getCconnect()
 {
 	SOCKET newConnection;
 	newConnection = accept(serversocket, (SOCKADDR*)&addr, &addrlength);

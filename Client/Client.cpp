@@ -1,41 +1,57 @@
 ﻿#include <iostream>
 #pragma comment(lib, "ws2_32.lib")
 #include "WinSock2.h"
+#include "Client.h"
 #pragma warning(disable:4996)
-int main()
+
+
+TCPserver::Client::Client(int port, std::string ipaddress)
 {
-    std::string ipaddress = "127.0.0.1";
-    int port = 8288;
-    WSADATA WSdata;
-    if (WSAStartup(MAKEWORD(2, 1), &WSdata) == SOCKET_ERROR)
+    this->port = port;
+    this->ipaddress = ipaddress;
+    addrlength = sizeof(addr);
+}
+
+TCPserver::Client::~Client()
+{
+}
+
+void TCPserver::Client::start()
+{
+    init();
+    connectToServer();
+    getMessage();
+}
+
+void TCPserver::Client::init()
+{
+    if (WSAStartup(MAKEWORD(2, 1), &wsa) == SOCKET_ERROR)
     {
         std::cout << "Couldn't init WSA!";
-        return 1;
+        exit(EXIT_FAILURE);
     }
-
-    SOCKADDR_IN addr;
-    int sizeofaddr = sizeof(addr);
     addr.sin_addr.s_addr = inet_addr(ipaddress.c_str());
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
+}
 
-    SOCKET Connection = socket(AF_INET, SOCK_STREAM, NULL);
-    if(connect(Connection, (SOCKADDR*)&addr, sizeofaddr) != 0)
+void TCPserver::Client::connectToServer()
+{
+    Connection = socket(AF_INET, SOCK_STREAM, NULL);
+    if (connect(Connection, (SOCKADDR*)&addr, addrlength) != 0)
     {
         std::cout << "Error: failed connect to server! \n";
-        return 1;
+        exit(EXIT_FAILURE);
     }
+    std::cout << "Connected to Server: Success.";
 
-    std::cout << "Connect success \n";
-    char msg[256];
+}
+
+void TCPserver::Client::getMessage()
+{
     while (true)
     {
-        recv(Connection, msg, sizeof(msg), NULL);
-        std::cout << msg;
+        recv(Connection, buffer, sizeof(buffer), NULL);
+        std::cout << buffer;
     }
-   
-    
-
-    system("pause");
-    return 0;
 }

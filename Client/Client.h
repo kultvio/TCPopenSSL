@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include <thread>
 #include <vector>
@@ -8,17 +9,16 @@
 #include <cassert>
 #pragma comment(lib, "ws2_32.lib")
 #define SIZE 1024
-#define MAX_CONNECTIONS 100
+
 
 namespace TCPserver
 {
-	class Server
+
+	class Client
 	{
 	private:
 		WSADATA wsa;
-		SOCKET serversocket;
-		SOCKET connections[MAX_CONNECTIONS];
-		int counter = 0;
+		SOCKET Connection;
 		std::string ipaddress;
 		int port;
 		char buffer[SIZE];
@@ -27,14 +27,14 @@ namespace TCPserver
 		int addrlength;
 		int reclength;
 	public:
-		Server(int, std::string);
-		~Server();
+		Client(int port, std::string ipaddress);
+		~Client();
 	public:
 		void start();
 		//void stop(); 
 		void init();
-		void getCconnect();
-		void Send(int i);
+		void connectToServer();
+		void getMessage();
+
 	};
 }
-
