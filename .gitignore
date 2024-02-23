@@ -35,4 +35,10 @@
 x64
 /.vs
 .vs/
-Debug
+Debug/
+/Debug
+/Debug/
+
+
+
+*.htm
