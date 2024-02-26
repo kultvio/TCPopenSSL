@@ -7,11 +7,15 @@
 #include <string>
 #include <cassert>
 #pragma comment(lib, "ws2_32.lib")
-#define SIZE 1024
-#define MAX_CONNECTIONS 100
+
+#define MAX_CONNECTIONS 5
 
 namespace TCPserver
 {
+	enum Packet
+	{
+		P_ChatMessage
+	};
 	class Server
 	{
 	private:
@@ -21,20 +25,33 @@ namespace TCPserver
 		int counter = 0;
 		std::string ipaddress;
 		int port;
-		char buffer[SIZE];
 		std::string message;
 		SOCKADDR_IN addr;
 		int addrlength;
 		int reclength;
+
+		struct ClientData {
+			Server* server;
+			int connectionIndex;
+		};
+		ClientData clientData;
+
+
+	private:
+		void init();
+		static DWORD WINAPI ClientHandler(LPVOID lpParam);
+		void getCconnect();
+		bool processPacket(int Index, Packet packetType);
+		bool processChatMessagePacket(int Index);
+		void sendMessageByIndex(int Index, char* msg, int msgSize, Packet packetType);
 	public:
 		Server(int, std::string);
 		~Server();
 	public:
 		void start();
-		//void stop(); 
-		void init();
-		void getCconnect();
-		void Send(int i);
+		//void stop();
 	};
+
+
 }
 

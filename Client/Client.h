@@ -8,12 +8,15 @@
 #include <string>
 #include <cassert>
 #pragma comment(lib, "ws2_32.lib")
-#define SIZE 1024
+
 
 
 namespace TCPserver
 {
-
+	enum Packet
+	{
+		P_ChatMessage
+	};
 	class Client
 	{
 	private:
@@ -21,11 +24,18 @@ namespace TCPserver
 		SOCKET Connection;
 		std::string ipaddress;
 		int port;
-		char buffer[SIZE];
+		//char buffer[SIZE];
 		std::string message;
 		SOCKADDR_IN addr;
 		int addrlength;
 		int reclength;
+
+		bool ProcessPacket(Packet packetType);
+		bool processChatMessagePacket();
+
+		bool sendChatPacket();
+
+		static DWORD WINAPI ClientHandler(LPVOID lpParam);
 	public:
 		Client(int port, std::string ipaddress);
 		~Client();
@@ -34,7 +44,8 @@ namespace TCPserver
 		//void stop(); 
 		void init();
 		void connectToServer();
-		void getMessage();
+		void recieveMessage();
+		void sendPacket();
 
 	};
 }
