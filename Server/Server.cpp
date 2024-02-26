@@ -18,6 +18,7 @@ TCPserver::Server::~Server()
 
 void TCPserver::Server::start()
 {
+
 	init();
 	while(true)
 	{
@@ -36,7 +37,7 @@ void TCPserver::Server::init()
 		std::cout << "Couldn't init WSA!";
 		exit(EXIT_FAILURE);
 	}
-
+	
 	serversocket = socket(AF_INET, SOCK_STREAM, NULL);
 	bind(serversocket, (SOCKADDR*)&addr, addrlength);
 	listen(serversocket, SOMAXCONN);
@@ -113,6 +114,7 @@ void TCPserver::Server::sendMessageByIndex(int Index, char* msg, int msgSize, Pa
 	send(connections[Index], (char*)&packetType, sizeof(Packet), NULL);
 	send(connections[Index], (char*)&msgSize, sizeof(int), NULL);
 	send(connections[Index], msg, msgSize, NULL);
+
 }
 
 DWORD __stdcall TCPserver::Server::ClientHandler(LPVOID lpParam)

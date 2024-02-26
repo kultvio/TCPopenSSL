@@ -6,6 +6,10 @@
 #include <unordered_map>
 #include <string>
 #include <cassert>
+
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+
 #pragma comment(lib, "ws2_32.lib")
 
 #define MAX_CONNECTIONS 5
